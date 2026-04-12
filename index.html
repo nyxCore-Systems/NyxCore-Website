@@ -4,319 +4,435 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NyxCore Systems</title>
-  <meta name="description" content="Open-source developer intelligence tools. Architectural analysis, code intelligence, and LLM tooling.">
+  <meta name="description" content="Open-source developer intelligence tools. Code graphs, architectural analysis, LLM tooling, and AI-native shell.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
   <style>
-    /* ── Reset & Base ───────────────────────────────────────────── */
+    /* ─── Reset ──────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ─── Design tokens ──────────────────────────────────────────── */
     :root {
-      --bg:          #07070e;
-      --surface:     #0d0d18;
-      --surface-2:   #121224;
-      --border:      #1c1c32;
-      --border-hover:#2e2e52;
-      --text:        #d8d8ee;
-      --text-muted:  #5a5a80;
-      --text-dim:    #3a3a5c;
-      --accent:      #4b8cf5;
-      --accent-dim:  rgba(75, 140, 245, 0.12);
-      --rust:        #c97a3a;
-      --rust-bg:     rgba(201, 122, 58, 0.10);
-      --ts:          #4a90d9;
-      --ts-bg:       rgba(74, 144, 217, 0.10);
-      --font-sans:   "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      --font-mono:   "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-      --font-display:"SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      --bg:           #060609;
+      --surface:      #0b0b10;
+      --surface-2:    #101018;
+      --border:       #17172a;
+      --border-2:     #22223a;
+
+      --text:         #eaeaf5;
+      --text-2:       #7070a0;
+      --text-3:       #383858;
+
+      /* Per-project accent colors */
+      --lip:          #e07c38;
+      --lip-glow:     rgba(224, 124, 56, 0.08);
+      --lip-border:   rgba(224, 124, 56, 0.28);
+
+      --carto:        #c8a55c;
+      --carto-glow:   rgba(200, 165, 92, 0.07);
+      --carto-border: rgba(200, 165, 92, 0.25);
+
+      --fc:           #4a9ae0;
+      --fc-glow:      rgba(74, 154, 224, 0.08);
+      --fc-border:    rgba(74, 154, 224, 0.28);
+
+      --nyx:          #3dc882;
+      --nyx-glow:     rgba(61, 200, 130, 0.07);
+      --nyx-border:   rgba(61, 200, 130, 0.25);
+
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
     }
 
-    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    /* ─── Base ───────────────────────────────────────────────────── */
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--font-sans);
+      font-family: var(--font-body);
       line-height: 1.6;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* ── Dot-grid background ────────────────────────────────────── */
-    body::before {
+    /* ─── Grain texture ──────────────────────────────────────────── */
+    body::after {
       content: '';
       position: fixed;
-      inset: 0;
-      background-image: radial-gradient(circle, #1e1e38 1px, transparent 1px);
-      background-size: 28px 28px;
-      opacity: 0.35;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ─── Radial bloom ───────────────────────────────────────────── */
+    .bloom {
+      position: fixed;
+      top: -20vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74, 100, 200, 0.055) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── Layout ─────────────────────────────────────────────────── */
-    main {
-      position: relative;
-      z-index: 1;
-      flex: 1;
-      width: 100%;
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    /* ── Nav ────────────────────────────────────────────────────── */
+    /* ─── Nav ────────────────────────────────────────────────────── */
     nav {
       position: relative;
-      z-index: 1;
-      width: 100%;
+      z-index: 10;
       border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
     }
 
     .nav-inner {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 0 2rem;
-      height: 52px;
+      padding: 0 2.5rem;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
     .nav-logo {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
       color: var(--text);
       text-decoration: none;
     }
 
-    .nav-logo span {
-      color: var(--text-muted);
+    .nav-logo .dim { color: var(--text-3); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
     }
 
     .nav-link {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: var(--text-2);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      transition: color 0.15s ease;
+      gap: 0.4rem;
+      transition: color 0.15s;
     }
 
     .nav-link:hover { color: var(--text); }
 
-    .nav-link svg { opacity: 0.7; }
+    /* ─── Layout shell ───────────────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 2.5rem;
+    }
 
-    /* ── Hero ───────────────────────────────────────────────────── */
+    /* ─── Hero ───────────────────────────────────────────────────── */
     .hero {
-      padding: 6rem 0 4.5rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      align-items: center;
+      gap: 4rem;
+      padding: 7rem 0 6rem;
       border-bottom: 1px solid var(--border);
     }
 
-    .hero-eyebrow {
+    .hero-kicker {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.18em;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 1.4rem;
+      color: var(--text-3);
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: rise 0.5s 0.05s ease forwards;
     }
 
     .hero-title {
       font-family: var(--font-display);
-      font-size: clamp(2.2rem, 5vw, 3.4rem);
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
+      font-weight: 800;
+      font-size: clamp(2.6rem, 4.5vw, 3.8rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
       color: var(--text);
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: rise 0.5s 0.12s ease forwards;
     }
 
-    .hero-title em {
-      font-style: normal;
-      color: var(--text-muted);
-    }
+    .hero-title .muted { color: var(--text-2); }
 
-    .hero-tagline {
+    .hero-sub {
+      font-family: var(--font-body);
       font-size: 1rem;
-      color: var(--text-muted);
-      max-width: 480px;
-      line-height: 1.65;
+      font-weight: 300;
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 440px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: rise 0.5s 0.19s ease forwards;
     }
 
-    /* ── Section label ──────────────────────────────────────────── */
-    .section-label {
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--text-2);
+      text-decoration: none;
+      border: 1px solid var(--border-2);
+      padding: 0.55em 1.1em;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      opacity: 0;
+      animation: rise 0.5s 0.26s ease forwards;
+    }
+
+    .hero-cta:hover {
+      color: var(--text);
+      border-color: var(--text-3);
+      background: var(--surface);
+    }
+
+    /* ─── Graph decoration ───────────────────────────────────────── */
+    .graph-wrap {
+      position: relative;
+      opacity: 0;
+      animation: rise 0.7s 0.3s ease forwards;
+    }
+
+    .graph-wrap svg { width: 100%; height: auto; display: block; }
+
+    @keyframes pulse-a {
+      0%, 100% { r: 4; opacity: 0.9; }
+      50%       { r: 6; opacity: 0.5; }
+    }
+    @keyframes pulse-b {
+      0%, 100% { r: 3.5; opacity: 0.8; }
+      50%       { r: 5.5; opacity: 0.4; }
+    }
+    @keyframes pulse-c {
+      0%, 100% { r: 3; opacity: 0.7; }
+      50%       { r: 5; opacity: 0.35; }
+    }
+    @keyframes edge-flow {
+      from { stroke-dashoffset: 60; }
+      to   { stroke-dashoffset: 0; }
+    }
+
+    .node-accent-a { animation: pulse-a 3.2s ease-in-out infinite; }
+    .node-accent-b { animation: pulse-b 3.8s 0.6s ease-in-out infinite; }
+    .node-accent-c { animation: pulse-c 4.4s 1.2s ease-in-out infinite; }
+    .edge-animated { stroke-dasharray: 4 8; animation: edge-flow 2s linear infinite; }
+
+    /* ─── Section bar ────────────────────────────────────────────── */
+    .section-bar {
       display: flex;
       align-items: center;
       gap: 1rem;
-      padding: 3rem 0 2.5rem;
+      padding: 3.5rem 0 2.8rem;
+      opacity: 0;
+      animation: rise 0.5s 0.45s ease forwards;
     }
 
-    .section-label span {
+    .section-bar span {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--text-dim);
+      color: var(--text-3);
       white-space: nowrap;
     }
 
-    .section-label::after {
+    .section-bar::after {
       content: '';
       flex: 1;
       height: 1px;
       background: var(--border);
     }
 
-    /* ── Project cards ──────────────────────────────────────────── */
+    /* ─── Cards grid ─────────────────────────────────────────────── */
     .projects {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 1px;
-      border: 1px solid var(--border);
       background: var(--border);
-      margin-bottom: 5rem;
+      border: 1px solid var(--border);
+      margin-bottom: 6rem;
     }
 
     .card {
       background: var(--surface);
-      padding: 2rem;
+      padding: 2.4rem 2.4rem 2rem;
       display: flex;
       flex-direction: column;
-      gap: 0;
-      transition: background 0.15s ease;
       position: relative;
       overflow: hidden;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      opacity: 0;
     }
 
-    .card::after {
+    .card:nth-child(1) { animation: rise 0.5s 0.5s ease forwards; }
+    .card:nth-child(2) { animation: rise 0.5s 0.6s ease forwards; }
+    .card:nth-child(3) { animation: rise 0.5s 0.7s ease forwards; }
+    .card:nth-child(4) { animation: rise 0.5s 0.8s ease forwards; }
+
+    /* Top accent bar */
+    .card::before {
       content: '';
       position: absolute;
-      inset: 0;
-      border: 1px solid transparent;
-      transition: border-color 0.2s ease;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      transition: opacity 0.2s;
+      opacity: 0.7;
+    }
+
+    .card-lip::before    { background: var(--lip); }
+    .card-carto::before  { background: var(--carto); }
+    .card-fc::before     { background: var(--fc); }
+    .card-nyx::before    { background: var(--nyx); }
+
+    /* Ghost number */
+    .card-ghost {
+      position: absolute;
+      top: -0.1em;
+      right: 0.5rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 7rem;
+      line-height: 1;
       pointer-events: none;
+      user-select: none;
+      transition: opacity 0.2s;
+      opacity: 0.032;
     }
 
-    .card:hover {
-      background: var(--surface-2);
-    }
+    /* Hover states — per-project glow */
+    .card-lip:hover    { background: var(--surface-2); box-shadow: inset 0 0 60px var(--lip-glow);   }
+    .card-carto:hover  { background: var(--surface-2); box-shadow: inset 0 0 60px var(--carto-glow); }
+    .card-fc:hover     { background: var(--surface-2); box-shadow: inset 0 0 60px var(--fc-glow);    }
+    .card-nyx:hover    { background: var(--surface-2); box-shadow: inset 0 0 60px var(--nyx-glow);   }
 
-    .card:hover::after {
-      border-color: var(--border-hover);
-    }
+    .card:hover::before { opacity: 1; }
+    .card:hover .card-ghost { opacity: 0.05; }
 
-    .card-index {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      color: var(--text-dim);
-      margin-bottom: 1.6rem;
-    }
-
-    .card-header {
+    /* Card content */
+    .card-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.9rem;
+      position: relative;
     }
 
     .card-name {
       font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
       color: var(--text);
-      line-height: 1.2;
     }
 
-    .lang-badge {
+    .badge {
       font-family: var(--font-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.06em;
-      font-weight: 600;
-      padding: 0.2em 0.55em;
-      border-radius: 2px;
-      white-space: nowrap;
+      font-size: 0.58rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      padding: 0.22em 0.6em;
       flex-shrink: 0;
-      margin-top: 0.1rem;
+      margin-top: 0.25rem;
     }
 
-    .lang-rust {
-      background: var(--rust-bg);
-      color: var(--rust);
-      border: 1px solid rgba(201, 122, 58, 0.2);
-    }
-
-    .lang-ts {
-      background: var(--ts-bg);
-      color: var(--ts);
-      border: 1px solid rgba(74, 144, 217, 0.2);
-    }
+    .badge-rust { color: var(--lip);  background: var(--lip-glow);   border: 1px solid var(--lip-border);   }
+    .badge-ts   { color: var(--fc);   background: var(--fc-glow);    border: 1px solid var(--fc-border);    }
+    .badge-cli  { color: var(--nyx);  background: var(--nyx-glow);   border: 1px solid var(--nyx-border);   }
 
     .card-tagline {
-      font-size: 0.78rem;
       font-family: var(--font-mono);
-      color: var(--text-muted);
-      margin-bottom: 1.1rem;
-      line-height: 1.4;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      margin-bottom: 1rem;
     }
 
+    .card-lip    .card-tagline { color: var(--lip);   }
+    .card-carto  .card-tagline { color: var(--carto); }
+    .card-fc     .card-tagline { color: var(--fc);    }
+    .card-nyx    .card-tagline { color: var(--nyx);   }
+
     .card-desc {
-      font-size: 0.855rem;
-      color: var(--text-muted);
-      line-height: 1.7;
+      font-size: 0.86rem;
+      font-weight: 300;
+      color: var(--text-2);
+      line-height: 1.75;
       flex: 1;
-      margin-bottom: 1.8rem;
+      margin-bottom: 2rem;
     }
 
     .card-links {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.9rem;
       flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 1.4rem;
+      border-top: 1px solid var(--border);
     }
 
-    .card-link {
+    .clink {
       font-family: var(--font-mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.04em;
+      font-size: 0.67rem;
+      letter-spacing: 0.03em;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      transition: color 0.15s ease;
+      transition: color 0.15s;
     }
 
-    .card-link-github {
-      color: var(--text-muted);
-    }
-    .card-link-github:hover { color: var(--text); }
+    .clink-gh    { color: var(--text-2);  }
+    .clink-gh:hover { color: var(--text); }
 
-    .card-link-site {
-      color: var(--accent);
-    }
-    .card-link-site:hover {
-      color: #7aaeff;
-    }
+    .clink-lip   { color: var(--lip);   }
+    .clink-carto { color: var(--carto); }
+    .clink-fc    { color: var(--fc);    }
+    .clink-nyx   { color: var(--nyx);   }
 
-    .card-link svg {
-      flex-shrink: 0;
-    }
+    .clink-lip:hover   { color: color-mix(in srgb, var(--lip)   70%, white);   }
+    .clink-carto:hover { color: color-mix(in srgb, var(--carto) 70%, white); }
+    .clink-fc:hover    { color: color-mix(in srgb, var(--fc)    70%, white);    }
+    .clink-nyx:hover   { color: color-mix(in srgb, var(--nyx)   70%, white);   }
 
-    .link-divider {
+    .sep {
       width: 1px;
       height: 10px;
-      background: var(--border);
+      background: var(--border-2);
     }
 
-    /* ── Footer ─────────────────────────────────────────────────── */
+    /* ─── Footer ─────────────────────────────────────────────────── */
     footer {
       position: relative;
       z-index: 1;
@@ -324,176 +440,274 @@
     }
 
     .footer-inner {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 1.5rem 2rem;
+      padding: 1.6rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .footer-copy {
       font-family: var(--font-mono);
-      font-size: 0.67rem;
-      letter-spacing: 0.05em;
-      color: var(--text-dim);
+      font-size: 0.64rem;
+      letter-spacing: 0.06em;
+      color: var(--text-3);
     }
 
-    .footer-link {
+    .footer-gh {
       font-family: var(--font-mono);
-      font-size: 0.67rem;
-      letter-spacing: 0.05em;
-      color: var(--text-dim);
+      font-size: 0.64rem;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      transition: color 0.15s ease;
+      transition: color 0.15s;
     }
 
-    .footer-link:hover { color: var(--text-muted); }
+    .footer-gh:hover { color: var(--text-2); }
 
-    /* ── Fade-in animation ──────────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ─── Animation ──────────────────────────────────────────────── */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0);    }
     }
 
-    .hero-eyebrow { animation: fadeUp 0.4s ease both; }
-    .hero-title   { animation: fadeUp 0.4s 0.07s ease both; }
-    .hero-tagline { animation: fadeUp 0.4s 0.14s ease both; }
-    .section-label { animation: fadeUp 0.4s 0.2s ease both; }
-    .card:nth-child(1) { animation: fadeUp 0.4s 0.25s ease both; }
-    .card:nth-child(2) { animation: fadeUp 0.4s 0.32s ease both; }
-    .card:nth-child(3) { animation: fadeUp 0.4s 0.39s ease both; }
+    /* ─── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 0 4rem; }
+      .graph-wrap { max-width: 340px; margin: 0 auto; }
+    }
 
-    /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 640px) {
+      .page { padding: 0 1.5rem; }
+      .nav-inner { padding: 0 1.5rem; }
+      .footer-inner { padding: 1.4rem 1.5rem; }
       .projects { grid-template-columns: 1fr; }
-      .hero { padding: 4rem 0 3rem; }
-      .hero-title { font-size: 1.9rem; }
+      .hero-title { font-size: 2.2rem; }
+      .card { padding: 1.8rem 1.6rem 1.6rem; }
+      .card-ghost { font-size: 5rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Nav -->
-  <nav>
-    <div class="nav-inner">
-      <a class="nav-logo" href="#">Nyx<span>Core</span></a>
+<div class="bloom" aria-hidden="true"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">NyxCore<span class="dim"> Systems</span></a>
+    <div class="nav-right">
       <a class="nav-link" href="https://github.com/nyxCore-Systems" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-        </svg>
-        nyxCore-Systems
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
       </a>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- Main -->
-  <main>
+<!-- Page -->
+<div class="page">
 
-    <!-- Hero -->
-    <section class="hero">
-      <p class="hero-eyebrow">nyxcore-systems / open source</p>
-      <h1 class="hero-title">Developer intelligence,<br><em>built in the open.</em></h1>
-      <p class="hero-tagline">Tools for the layer beneath your editor — code graphs, architectural analysis, and LLM-native format handling.</p>
-    </section>
-
-    <!-- Projects -->
-    <div class="section-label">
-      <span>Projects</span>
-    </div>
-
-    <div class="projects">
-
-      <!-- LIP -->
-      <article class="card">
-        <p class="card-index">01</p>
-        <div class="card-header">
-          <h2 class="card-name">LIP</h2>
-          <span class="lang-badge lang-rust">Rust</span>
-        </div>
-        <p class="card-tagline">The live code intelligence layer your tools are missing.</p>
-        <p class="card-desc">
-          A persistent, incremental code intelligence daemon. Keeps a live, queryable graph of your entire repository and updates only the blast radius of each change. An open protocol for the layer every AI coding tool builds privately: cross-session persistence, sub-millisecond freshness, federated dependency indexing, and a first-class MCP server for AI agent integration.
-        </p>
-        <div class="card-links">
-          <a class="card-link card-link-github" href="https://github.com/nyxCore-Systems/LIP" target="_blank" rel="noopener">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
-            nyxCore-Systems/LIP
-          </a>
-          <span class="link-divider" aria-hidden="true"></span>
-          <a class="card-link card-link-site" href="https://lip.dev" target="_blank" rel="noopener">
-            lip.dev
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <path d="M2 10L10 2M10 2H4M10 2V8"/>
-            </svg>
-          </a>
-        </div>
-      </article>
-
-      <!-- Cartographer -->
-      <article class="card">
-        <p class="card-index">02</p>
-        <div class="card-header">
-          <h2 class="card-name">Cartographer</h2>
-          <span class="lang-badge lang-rust">Rust</span>
-        </div>
-        <p class="card-tagline">The GPS with traffic data for your codebase.</p>
-        <p class="card-desc">
-          A structural intelligence engine that maps your codebase's architecture, monitors its health, and predicts the ripple effects of changes before you make them. Detects architectural bottlenecks via bridgeness centrality, enforces layer boundaries via configurable rules, scores health 0–100, and tracks structural evolution over time.
-        </p>
-        <div class="card-links">
-          <a class="card-link card-link-github" href="https://github.com/nyxCore-Systems/Cartographer" target="_blank" rel="noopener">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
-            nyxCore-Systems/Cartographer
-          </a>
-        </div>
-      </article>
-
-      <!-- format-converters -->
-      <article class="card">
-        <p class="card-index">03</p>
-        <div class="card-header">
-          <h2 class="card-name">format-converters</h2>
-          <span class="lang-badge lang-ts">TypeScript</span>
-        </div>
-        <p class="card-tagline">Split structured content at the right seam for LLM compression.</p>
-        <p class="card-desc">
-          Zero-dependency TypeScript library that detects format across 26 types — JSON, XML, HTML, YAML, TOML, MDX, Markdown, CSV, Dockerfile, and more — then splits content into what must stay verbatim versus what can be compressed. Designed for LLM pipelines that receive structured documents: keeps the schema, shrinks the prose. 226 tests. Works everywhere JavaScript runs.
-        </p>
-        <div class="card-links">
-          <a class="card-link card-link-github" href="https://github.com/nyxCore-Systems/format-converters" target="_blank" rel="noopener">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
-            nyxCore-Systems/format-converters
-          </a>
-        </div>
-      </article>
-
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <div class="footer-inner">
-      <span class="footer-copy">Built by NyxCore Systems</span>
-      <a class="footer-link" href="https://github.com/nyxCore-Systems" target="_blank" rel="noopener">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-        </svg>
-        github.com/nyxCore-Systems
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-text">
+      <p class="hero-kicker">nyxcore-systems &mdash; open source</p>
+      <h1 class="hero-title">
+        Infrastructure<br>
+        <span class="muted">for developer</span><br>
+        intelligence.
+      </h1>
+      <p class="hero-sub">
+        Four open-source tools for the layer beneath your editor &mdash;
+        live code graphs, architectural analysis, LLM-native format handling,
+        and AI-powered shell.
+      </p>
+      <a class="hero-cta" href="https://github.com/nyxCore-Systems" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        nyxCore-Systems on GitHub
       </a>
     </div>
-  </footer>
+
+    <!-- Dependency graph decoration -->
+    <div class="graph-wrap" aria-hidden="true">
+      <svg viewBox="0 0 360 290" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Edges (static, dim) -->
+        <line x1="180" y1="38"  x2="88"  y2="98"  stroke="#1e1e38" stroke-width="1"/>
+        <line x1="180" y1="38"  x2="180" y2="100" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="180" y1="38"  x2="272" y2="98"  stroke="#1e1e38" stroke-width="1"/>
+        <line x1="88"  y1="98"  x2="50"  y2="170" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="88"  y1="98"  x2="148" y2="170" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="180" y1="100" x2="148" y2="170" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="180" y1="100" x2="220" y2="170" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="272" y1="98"  x2="220" y2="170" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="272" y1="98"  x2="310" y2="170" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="50"  y1="170" x2="100" y2="248" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="148" y1="170" x2="100" y2="248" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="148" y1="170" x2="200" y2="248" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="220" y1="170" x2="200" y2="248" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="310" y1="170" x2="280" y2="248" stroke="#1e1e38" stroke-width="1"/>
+        <line x1="220" y1="170" x2="280" y2="248" stroke="#1e1e38" stroke-width="1"/>
+
+        <!-- Animated flow edges (accent) -->
+        <line x1="180" y1="38"  x2="180" y2="100" stroke="#e07c38" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="3 7" class="edge-animated"/>
+        <line x1="148" y1="170" x2="200" y2="248" stroke="#4a9ae0" stroke-width="1" stroke-opacity="0.4" stroke-dasharray="3 7" class="edge-animated" style="animation-delay:0.8s"/>
+        <line x1="310" y1="170" x2="280" y2="248" stroke="#3dc882" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="3 7" class="edge-animated" style="animation-delay:1.6s"/>
+
+        <!-- Static nodes (dim) -->
+        <circle cx="88"  cy="98"  r="3.5" fill="#252545"/>
+        <circle cx="272" cy="98"  r="3.5" fill="#252545"/>
+        <circle cx="50"  cy="170" r="3"   fill="#1e1e38"/>
+        <circle cx="148" cy="170" r="3.5" fill="#252545"/>
+        <circle cx="220" cy="170" r="3.5" fill="#252545"/>
+        <circle cx="310" cy="170" r="3"   fill="#1e1e38"/>
+        <circle cx="100" cy="248" r="3"   fill="#1e1e38"/>
+        <circle cx="280" cy="248" r="3"   fill="#1e1e38"/>
+
+        <!-- Accent nodes (animated) -->
+        <!-- Root node — lip orange -->
+        <circle cx="180" cy="38" fill="#e07c38" class="node-accent-a">
+          <animate attributeName="r" values="4;6;4" dur="3.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;0.5;0.9" dur="3.2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Mid node — blue -->
+        <circle cx="180" cy="100" fill="#4a9ae0" class="node-accent-b">
+          <animate attributeName="r" values="3.5;5.5;3.5" dur="3.8s" begin="0.6s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3.8s" begin="0.6s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Leaf node — green -->
+        <circle cx="200" cy="248" fill="#3dc882" class="node-accent-c">
+          <animate attributeName="r" values="3;5;3" dur="4.4s" begin="1.2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.7;0.35;0.7" dur="4.4s" begin="1.2s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- Node halos (glow rings) -->
+        <circle cx="180" cy="38"  r="10" fill="none" stroke="#e07c38" stroke-width="0.5" stroke-opacity="0.18"/>
+        <circle cx="180" cy="100" r="9"  fill="none" stroke="#4a9ae0" stroke-width="0.5" stroke-opacity="0.15"/>
+        <circle cx="200" cy="248" r="8"  fill="none" stroke="#3dc882" stroke-width="0.5" stroke-opacity="0.13"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Projects section -->
+  <div class="section-bar"><span>Projects &mdash; 04</span></div>
+
+  <div class="projects">
+
+    <!-- ── LIP ─────────────────────────────────────────────────── -->
+    <article class="card card-lip">
+      <span class="card-ghost" aria-hidden="true">01</span>
+      <div class="card-top">
+        <h2 class="card-name">LIP</h2>
+        <span class="badge badge-rust">Rust</span>
+      </div>
+      <p class="card-tagline">The live code intelligence layer your tools are missing.</p>
+      <p class="card-desc">
+        A persistent, incremental code intelligence daemon that keeps a live, queryable graph
+        of your entire repository and updates only the blast radius of each change &mdash;
+        the files and symbols actually affected. An open protocol for the layer every AI coding
+        tool builds privately: cross-session persistence, sub-millisecond freshness, federated
+        dependency indexing, and a first-class MCP server for AI agent integration.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/LIP" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/LIP
+        </a>
+        <span class="sep"></span>
+        <a class="clink clink-lip" href="https://lip.dev" target="_blank" rel="noopener">
+          lip.dev
+          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8"/></svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── Cartographer ──────────────────────────────────────────── -->
+    <article class="card card-carto">
+      <span class="card-ghost" aria-hidden="true">02</span>
+      <div class="card-top">
+        <h2 class="card-name">Cartographer</h2>
+        <span class="badge badge-rust">Rust</span>
+      </div>
+      <p class="card-tagline">The GPS with traffic data for your codebase.</p>
+      <p class="card-desc">
+        A structural intelligence engine that maps your codebase's architecture, monitors its
+        health, and predicts the ripple effects of changes before you make them. Detects
+        architectural bottlenecks via bridgeness centrality, enforces layer boundaries with
+        configurable rules, scores health 0&ndash;100, and tracks structural evolution over time.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/Cartographer" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/Cartographer
+        </a>
+      </div>
+    </article>
+
+    <!-- ── format-converters ─────────────────────────────────────── -->
+    <article class="card card-fc">
+      <span class="card-ghost" aria-hidden="true">03</span>
+      <div class="card-top">
+        <h2 class="card-name">format-converters</h2>
+        <span class="badge badge-ts">TypeScript</span>
+      </div>
+      <p class="card-tagline">Split structured content at the right seam for LLM compression.</p>
+      <p class="card-desc">
+        Zero-dependency TypeScript library that detects format across 26 types &mdash; JSON, XML,
+        HTML, YAML, TOML, MDX, Markdown, CSV, Dockerfile, and more &mdash; then splits content into
+        what must stay verbatim versus what can be compressed. Designed for LLM pipelines that receive
+        structured documents: keeps the schema, shrinks the prose. 226 tests. Works everywhere
+        JavaScript runs.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/format-converters" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/format-converters
+        </a>
+      </div>
+    </article>
+
+    <!-- ── Nyx.code ──────────────────────────────────────────────── -->
+    <article class="card card-nyx">
+      <span class="card-ghost" aria-hidden="true">04</span>
+      <div class="card-top">
+        <h2 class="card-name">Nyx.code</h2>
+        <span class="badge badge-cli">CLI</span>
+      </div>
+      <p class="card-tagline">Talk to your terminal.</p>
+      <p class="card-desc">
+        Natural language to shell commands with no subscriptions, cloud dependency, or login
+        required. Six modes: Ask, Explain, Fix, Debug, Build, and Chat. Safety-first: risk
+        analysis and command preview before any execution. Fully offline via Ollama, or connect
+        your own API keys. Ships as a single 7 MB binary. Includes an MCP server for Claude
+        Desktop and Cursor, plus a workflow marketplace of pre-built DevOps playbooks.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-nyx" href="https://nyxcode-blond.vercel.app" target="_blank" rel="noopener">
+          nyxcode-blond.vercel.app
+          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8"/></svg>
+        </a>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">Built by NyxCore Systems</span>
+    <a class="footer-gh" href="https://github.com/nyxCore-Systems" target="_blank" rel="noopener">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      github.com/nyxCore-Systems
+    </a>
+  </div>
+</footer>
 
 </body>
 </html>
