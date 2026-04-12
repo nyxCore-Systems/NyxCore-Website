@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <filter id="g" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="#0d0d1c"/>
+
+  <!-- N letterform: left vertical → diagonal → right vertical -->
+  <path d="M8 23L8 9L24 23L24 9"
+        fill="none"
+        stroke="#eaeaf5"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+  <!-- Orange node — the root, terminating the top-right of the N -->
+  <circle cx="24" cy="9" r="3.2" fill="#e07c38" filter="url(#g)"/>
+</svg>
