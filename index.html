@@ -7,7 +7,7 @@
   <meta name="description" content="Open-source developer intelligence tools. Code graphs, architectural analysis, LLM tooling, and AI-native shell.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     /* ─── Reset ──────────────────────────────────────────────────── */
@@ -15,35 +15,39 @@
 
     /* ─── Design tokens ──────────────────────────────────────────── */
     :root {
-      --bg:           #060609;
-      --surface:      #0b0b10;
-      --surface-2:    #101018;
-      --border:       #17172a;
-      --border-2:     #22223a;
+      --bg:           #08080e;
+      --surface:      #0e0e1c;
+      --surface-2:    #141428;
+      --border:       #1f1f38;
+      --border-2:     #2e2e50;
 
-      --text:         #eaeaf5;
-      --text-2:       #7070a0;
-      --text-3:       #383858;
+      --text:         #f0f0fa;
+      --text-2:       #a0a0c8;
+      --text-3:       #585878;
 
       /* Per-project accent colors */
       --lip:          #e07c38;
-      --lip-glow:     rgba(224, 124, 56, 0.08);
-      --lip-border:   rgba(224, 124, 56, 0.28);
+      --lip-glow:     rgba(224, 124, 56, 0.13);
+      --lip-border:   rgba(224, 124, 56, 0.35);
 
       --carto:        #c8a55c;
-      --carto-glow:   rgba(200, 165, 92, 0.07);
-      --carto-border: rgba(200, 165, 92, 0.25);
+      --carto-glow:   rgba(200, 165, 92, 0.11);
+      --carto-border: rgba(200, 165, 92, 0.32);
 
       --fc:           #4a9ae0;
-      --fc-glow:      rgba(74, 154, 224, 0.08);
-      --fc-border:    rgba(74, 154, 224, 0.28);
+      --fc-glow:      rgba(74, 154, 224, 0.13);
+      --fc-border:    rgba(74, 154, 224, 0.35);
 
       --nyx:          #3dc882;
-      --nyx-glow:     rgba(61, 200, 130, 0.07);
-      --nyx-border:   rgba(61, 200, 130, 0.25);
+      --nyx-glow:     rgba(61, 200, 130, 0.11);
+      --nyx-border:   rgba(61, 200, 130, 0.32);
 
-      --font-display: 'Syne', sans-serif;
-      --font-body:    'DM Sans', sans-serif;
+      --sw:           #9d7cf0;
+      --sw-glow:      rgba(157, 124, 240, 0.11);
+      --sw-border:    rgba(157, 124, 240, 0.32);
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body:    'Inter', sans-serif;
       --font-mono:    'JetBrains Mono', monospace;
     }
 
@@ -80,19 +84,33 @@
       top: -20vh;
       left: 50%;
       transform: translateX(-50%);
-      width: 900px;
-      height: 600px;
-      background: radial-gradient(ellipse at 50% 0%, rgba(74, 100, 200, 0.055) 0%, transparent 70%);
+      width: 1100px;
+      height: 750px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(74, 100, 220, 0.14) 0%, rgba(100, 70, 180, 0.055) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bloom-2 {
+      position: fixed;
+      bottom: -15vh;
+      right: 15%;
+      width: 700px;
+      height: 550px;
+      background: radial-gradient(ellipse at 70% 100%, rgba(224, 124, 56, 0.045) 0%, transparent 65%);
       pointer-events: none;
       z-index: 0;
     }
 
     /* ─── Nav ────────────────────────────────────────────────────── */
     nav {
-      position: relative;
+      position: sticky;
+      top: 0;
       z-index: 10;
+      background: rgba(6, 6, 9, 0.88);
       border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
 
     .nav-inner {
@@ -107,7 +125,7 @@
 
     .nav-logo {
       font-family: var(--font-display);
-      font-weight: 800;
+      font-weight: 700;
       font-size: 1rem;
       letter-spacing: -0.01em;
       color: var(--text);
@@ -170,10 +188,10 @@
 
     .hero-title {
       font-family: var(--font-display);
-      font-weight: 800;
+      font-weight: 700;
       font-size: clamp(2.6rem, 4.5vw, 3.8rem);
-      letter-spacing: -0.04em;
-      line-height: 1.05;
+      letter-spacing: -0.03em;
+      line-height: 1.07;
       color: var(--text);
       margin-bottom: 1.4rem;
       opacity: 0;
@@ -182,12 +200,19 @@
 
     .hero-title .muted { color: var(--text-2); }
 
+    .hero-title .accent-word {
+      background: linear-gradient(125deg, var(--text) 20%, rgba(224, 124, 56, 0.82) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     .hero-sub {
       font-family: var(--font-body);
       font-size: 1rem;
-      font-weight: 300;
+      font-weight: 400;
       color: var(--text-2);
-      line-height: 1.7;
+      line-height: 1.75;
       max-width: 440px;
       margin-bottom: 2.5rem;
       opacity: 0;
@@ -212,8 +237,8 @@
 
     .hero-cta:hover {
       color: var(--text);
-      border-color: var(--text-3);
-      background: var(--surface);
+      border-color: rgba(224, 124, 56, 0.45);
+      background: rgba(224, 124, 56, 0.06);
     }
 
     /* ─── Graph decoration ───────────────────────────────────────── */
@@ -270,7 +295,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border);
+      background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
     }
 
     /* ─── Cards grid ─────────────────────────────────────────────── */
@@ -280,17 +305,20 @@
       gap: 1px;
       background: var(--border);
       border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
       margin-bottom: 6rem;
     }
 
     .card {
       background: var(--surface);
-      padding: 2.4rem 2.4rem 2rem;
+      background-image: linear-gradient(160deg, rgba(255,255,255,0.022) 0%, transparent 55%);
+      padding: 2.6rem 2.5rem 2.2rem;
       display: flex;
       flex-direction: column;
       position: relative;
       overflow: hidden;
-      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
       opacity: 0;
     }
 
@@ -298,21 +326,32 @@
     .card:nth-child(2) { animation: rise 0.5s 0.6s ease forwards; }
     .card:nth-child(3) { animation: rise 0.5s 0.7s ease forwards; }
     .card:nth-child(4) { animation: rise 0.5s 0.8s ease forwards; }
+    .card:nth-child(5) { animation: rise 0.5s 0.9s ease forwards; }
+
+    .card-wide { grid-column: 1 / -1; }
 
     /* Top accent bar */
     .card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 2px;
-      transition: opacity 0.2s;
-      opacity: 0.7;
+      height: 3px;
+      transition: opacity 0.25s, box-shadow 0.25s;
+      opacity: 0.85;
     }
 
     .card-lip::before    { background: var(--lip); }
     .card-carto::before  { background: var(--carto); }
     .card-fc::before     { background: var(--fc); }
     .card-nyx::before    { background: var(--nyx); }
+    .card-sw::before     { background: var(--sw); }
+
+    /* Subtle ambient tint per card — visible at rest */
+    .card-lip    { box-shadow: inset 0 0 60px rgba(224, 124,  56, 0.05); }
+    .card-carto  { box-shadow: inset 0 0 60px rgba(200, 165,  92, 0.04); }
+    .card-fc     { box-shadow: inset 0 0 60px rgba( 74, 154, 224, 0.05); }
+    .card-nyx    { box-shadow: inset 0 0 60px rgba( 61, 200, 130, 0.04); }
+    .card-sw     { box-shadow: inset 0 0 60px rgba(157, 124, 240, 0.05); }
 
     /* Ghost number */
     .card-ghost {
@@ -320,23 +359,24 @@
       top: -0.1em;
       right: 0.5rem;
       font-family: var(--font-display);
-      font-weight: 800;
+      font-weight: 700;
       font-size: 7rem;
       line-height: 1;
       pointer-events: none;
       user-select: none;
-      transition: opacity 0.2s;
-      opacity: 0.032;
+      transition: opacity 0.25s;
+      opacity: 0.06;
     }
 
     /* Hover states — per-project glow */
-    .card-lip:hover    { background: var(--surface-2); box-shadow: inset 0 0 60px var(--lip-glow);   }
-    .card-carto:hover  { background: var(--surface-2); box-shadow: inset 0 0 60px var(--carto-glow); }
-    .card-fc:hover     { background: var(--surface-2); box-shadow: inset 0 0 60px var(--fc-glow);    }
-    .card-nyx:hover    { background: var(--surface-2); box-shadow: inset 0 0 60px var(--nyx-glow);   }
+    .card-lip:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px var(--lip-glow),   inset 0 1px 0 rgba(224,124,56,0.12);  }
+    .card-carto:hover  { background: var(--surface-2); box-shadow: inset 0 0 100px var(--carto-glow), inset 0 1px 0 rgba(200,165,92,0.12);  }
+    .card-fc:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--fc-glow),    inset 0 1px 0 rgba(74,154,224,0.12);  }
+    .card-nyx:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px var(--nyx-glow),   inset 0 1px 0 rgba(61,200,130,0.12);  }
+    .card-sw:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--sw-glow),    inset 0 1px 0 rgba(157,124,240,0.12); }
 
-    .card:hover::before { opacity: 1; }
-    .card:hover .card-ghost { opacity: 0.05; }
+    .card:hover::before { opacity: 1; box-shadow: 0 0 14px 0 currentColor; }
+    .card:hover .card-ghost { opacity: 0.1; }
 
     /* Card content */
     .card-top {
@@ -351,7 +391,7 @@
     .card-name {
       font-family: var(--font-display);
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.45rem;
       letter-spacing: -0.025em;
       line-height: 1.15;
       color: var(--text);
@@ -370,24 +410,26 @@
     .badge-rust { color: var(--lip);  background: var(--lip-glow);   border: 1px solid var(--lip-border);   }
     .badge-ts   { color: var(--fc);   background: var(--fc-glow);    border: 1px solid var(--fc-border);    }
     .badge-cli  { color: var(--nyx);  background: var(--nyx-glow);   border: 1px solid var(--nyx-border);   }
+    .badge-sw   { color: var(--sw);   background: var(--sw-glow);    border: 1px solid var(--sw-border);    }
 
     .card-tagline {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
-      line-height: 1.45;
-      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
     }
 
     .card-lip    .card-tagline { color: var(--lip);   }
     .card-carto  .card-tagline { color: var(--carto); }
     .card-fc     .card-tagline { color: var(--fc);    }
     .card-nyx    .card-tagline { color: var(--nyx);   }
+    .card-sw     .card-tagline { color: var(--sw);    }
 
     .card-desc {
-      font-size: 0.86rem;
-      font-weight: 300;
+      font-size: 0.875rem;
+      font-weight: 400;
       color: var(--text-2);
-      line-height: 1.75;
+      line-height: 1.72;
       flex: 1;
       margin-bottom: 2rem;
     }
@@ -398,8 +440,8 @@
       gap: 0.9rem;
       flex-wrap: wrap;
       margin-top: auto;
-      padding-top: 1.4rem;
-      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-2);
     }
 
     .clink {
@@ -420,17 +462,168 @@
     .clink-carto { color: var(--carto); }
     .clink-fc    { color: var(--fc);    }
     .clink-nyx   { color: var(--nyx);   }
+    .clink-sw    { color: var(--sw);    }
 
     .clink-lip:hover   { color: color-mix(in srgb, var(--lip)   70%, white);   }
     .clink-carto:hover { color: color-mix(in srgb, var(--carto) 70%, white); }
     .clink-fc:hover    { color: color-mix(in srgb, var(--fc)    70%, white);    }
     .clink-nyx:hover   { color: color-mix(in srgb, var(--nyx)   70%, white);   }
+    .clink-sw:hover    { color: color-mix(in srgb, var(--sw)    70%, white);    }
 
     .sep {
       width: 1px;
       height: 10px;
       background: var(--border-2);
     }
+
+    /* ─── Mission ───────────────────────────────────────────────── */
+    .mission {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mission-col h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 1.1rem;
+    }
+
+    .mission-col p {
+      font-size: 0.925rem;
+      font-weight: 400;
+      color: var(--text-2);
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    .mission-col p:last-child { margin-bottom: 0; }
+
+    .mission-link {
+      color: var(--nyx);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(61,200,130,0.35);
+      transition: color 0.15s;
+    }
+
+    .mission-link:hover { color: color-mix(in srgb, var(--nyx) 70%, white); }
+
+    /* ─── Team grid ──────────────────────────────────────────────── */
+    .team {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6rem;
+    }
+
+    .person {
+      background: var(--surface);
+      background-image: linear-gradient(160deg, rgba(255,255,255,0.022) 0%, transparent 55%);
+      padding: 2.6rem 2.5rem 2.4rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .person::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      opacity: 0.85;
+      transition: opacity 0.25s, box-shadow 0.25s;
+    }
+
+    .person-oliver::before  { background: var(--lip); }
+    .person-lisa::before    { background: var(--fc); }
+    .person-martyna::before { background: var(--sw); }
+
+    .person-oliver  { box-shadow: inset 0 0 60px rgba(224, 124,  56, 0.05); }
+    .person-lisa    { box-shadow: inset 0 0 60px rgba( 74, 154, 224, 0.05); }
+    .person-martyna { box-shadow: inset 0 0 60px rgba(157, 124, 240, 0.05); }
+
+    .person-oliver:hover  { background: var(--surface-2); box-shadow: inset 0 0 100px rgba(224, 124,  56, 0.13), inset 0 1px 0 rgba(224,124,56,0.12); }
+    .person-lisa:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px rgba( 74, 154, 224, 0.13), inset 0 1px 0 rgba(74,154,224,0.12); }
+    .person-martyna:hover { background: var(--surface-2); box-shadow: inset 0 0 100px rgba(157, 124, 240, 0.13), inset 0 1px 0 rgba(157,124,240,0.12); }
+
+    .person:hover::before { opacity: 1; box-shadow: 0 0 14px 0 currentColor; }
+
+    .person-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .person-oliver  .person-avatar { background: var(--lip-glow); border: 1px solid var(--lip-border); color: var(--lip); }
+    .person-lisa    .person-avatar { background: var(--fc-glow);  border: 1px solid var(--fc-border);  color: var(--fc);  }
+    .person-martyna .person-avatar { background: var(--sw-glow);  border: 1px solid var(--sw-border);  color: var(--sw);  }
+
+    .person-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .person-role {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      flex: 1;
+    }
+
+    .person-oliver  .person-role { color: var(--lip); opacity: 0.75; }
+    .person-lisa    .person-role { color: var(--fc);  opacity: 0.75; }
+    .person-martyna .person-role { color: var(--sw);  opacity: 0.75; }
+
+    .person-links {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-2);
+      min-height: 2.5rem;
+    }
+
+    .plink {
+      font-family: var(--font-mono);
+      font-size: 0.67rem;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.15s;
+    }
+
+    .plink-lip { color: var(--lip); }
+    .plink-lip:hover { color: color-mix(in srgb, var(--lip) 70%, white); }
+    .plink-fc  { color: var(--fc);  }
+    .plink-fc:hover  { color: color-mix(in srgb, var(--fc)  70%, white); }
 
     /* ─── Footer ─────────────────────────────────────────────────── */
     footer {
@@ -481,6 +674,8 @@
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 0 4rem; }
       .graph-wrap { max-width: 340px; margin: 0 auto; }
+      .mission { grid-template-columns: 1fr; gap: 2rem; }
+      .team { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 640px) {
@@ -488,21 +683,26 @@
       .nav-inner { padding: 0 1.5rem; }
       .footer-inner { padding: 1.4rem 1.5rem; }
       .projects { grid-template-columns: 1fr; }
+      .card-wide { grid-column: 1; }
       .hero-title { font-size: 2.2rem; }
       .card { padding: 1.8rem 1.6rem 1.6rem; }
       .card-ghost { font-size: 5rem; }
+      .team { grid-template-columns: 1fr; }
+      .person { padding: 2rem 1.8rem 2rem; }
     }
   </style>
 </head>
 <body>
 
 <div class="bloom" aria-hidden="true"></div>
+<div class="bloom-2" aria-hidden="true"></div>
 
 <!-- Nav -->
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="#">NyxCore<span class="dim"> Systems</span></a>
     <div class="nav-right">
+      <a class="nav-link" href="#about">About</a>
       <a class="nav-link" href="https://github.com/nyxCore-Systems" target="_blank" rel="noopener">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
         GitHub
@@ -521,7 +721,7 @@
       <h1 class="hero-title">
         Infrastructure<br>
         <span class="muted">for developer</span><br>
-        intelligence.
+        <span class="accent-word">intelligence</span>.
       </h1>
       <p class="hero-sub">
         Four open-source tools for the layer beneath your editor &mdash;
@@ -595,7 +795,7 @@
   </section>
 
   <!-- Projects section -->
-  <div class="section-bar"><span>Projects &mdash; 04</span></div>
+  <div class="section-bar"><span>Projects &mdash; 05</span></div>
 
   <div class="projects">
 
@@ -695,7 +895,108 @@
       </div>
     </article>
 
+    <!-- ── SwarmWire ───────────────────────────────────────────────── -->
+    <article class="card card-sw card-wide">
+      <span class="card-ghost" aria-hidden="true">05</span>
+      <div class="card-top">
+        <h2 class="card-name">SwarmWire</h2>
+        <span class="badge badge-sw">TypeScript</span>
+      </div>
+      <p class="card-tagline">Orchestrate LLM agents without losing control of cost.</p>
+      <p class="card-desc">
+        Budget-first multi-agent orchestration library for TypeScript. Coordinate agents through typed,
+        composable patterns &mdash; pipeline, parallel, debate, and more &mdash; with hard cost limits,
+        conflict resolution, and adaptive routing. Library, not framework: zero lock-in, works standalone
+        or with ANCS as its memory backend. Ships as an npm package with full TypeScript 5.5+ types.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/SwarmWire" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/SwarmWire
+        </a>
+        <span class="sep"></span>
+        <a class="clink clink-sw" href="https://www.npmjs.com/package/swarmwire" target="_blank" rel="noopener">
+          npm install swarmwire
+          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8"/></svg>
+        </a>
+      </div>
+    </article>
+
   </div>
+</div>
+
+<!-- About -->
+<div class="page" id="about">
+
+  <div class="section-bar"><span>About</span></div>
+
+  <div class="mission">
+    <div class="mission-col">
+      <h2>The layer beneath the tools</h2>
+      <p>
+        Every AI coding assistant, every static analysis tool, every architectural review
+        builds its own private model of your codebase from scratch. There's no shared
+        substrate &mdash; no live, queryable graph that persists across sessions and updates
+        only what changed.
+      </p>
+      <p>
+        That's the layer we work on. Persistent code graphs. Structural health analysis.
+        LLM-native format handling. Multi-agent orchestration with hard cost limits.
+        AI-powered shell that works fully offline.
+      </p>
+    </div>
+    <div class="mission-col">
+      <h2>Open protocol, not platform</h2>
+      <p>
+        Everything we ship is open source, documented, and designed to compose.
+        We don't build platforms or lock-in &mdash; we build primitives that other tools
+        can integrate with. If we build an MCP server, it works with any client.
+        If we define a graph protocol, anyone can implement it.
+      </p>
+      <p>
+        We're a small team and we build carefully. For teams that want the intelligence
+        layer fully managed, there's <a class="mission-link" href="https://nyxcore.cloud" target="_blank" rel="noopener">nyxcore.cloud</a> &mdash; our hosted platform.
+      </p>
+    </div>
+  </div>
+
+  <div class="section-bar"><span>The team &mdash; 03</span></div>
+
+  <div class="team">
+
+    <div class="person person-oliver">
+      <div class="person-avatar">OB</div>
+      <p class="person-name">Oliver Baer</p>
+      <p class="person-role">Founder &amp; Chief Architect</p>
+      <div class="person-links">
+        <a class="plink plink-lip" href="https://nyxcore.cloud" target="_blank" rel="noopener">
+          nyxcore.cloud
+          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="person person-lisa">
+      <div class="person-avatar">LW</div>
+      <p class="person-name">Lisa Welsch</p>
+      <p class="person-role">Core Systems Engineer</p>
+      <div class="person-links">
+        <a class="plink plink-fc" href="https://www.lisawelsch.com" target="_blank" rel="noopener">
+          lisawelsch.com
+          <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="person person-martyna">
+      <div class="person-avatar">MK</div>
+      <p class="person-name">Martyna Kwiecień</p>
+      <p class="person-role">Data Sovereignty Counsel</p>
+      <div class="person-links"></div>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- Footer -->
