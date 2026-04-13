@@ -51,6 +51,14 @@
       --nc-glow:      rgba(42, 199, 212, 0.10);
       --nc-border:    rgba(42, 199, 212, 0.30);
 
+      --nxd:          #6366f1;
+      --nxd-glow:     rgba(99, 102, 241, 0.11);
+      --nxd-border:   rgba(99, 102, 241, 0.32);
+
+      --rag:          #e8775a;
+      --rag-glow:     rgba(232, 119, 90, 0.11);
+      --rag-border:   rgba(232, 119, 90, 0.32);
+
       --font-display: 'Space Grotesk', sans-serif;
       --font-body:    'Inter', sans-serif;
       --font-mono:    'JetBrains Mono', monospace;
@@ -350,6 +358,8 @@
     .card-nyx::before    { background: var(--nyx); }
     .card-sw::before     { background: var(--sw); }
     .card-nc::before     { background: var(--nc); }
+    .card-nxd::before    { background: var(--nxd); }
+    .card-rag::before    { background: var(--rag); }
 
     /* Subtle ambient tint per card — visible at rest */
     .card-lip    { box-shadow: inset 0 0 60px rgba(224, 124,  56, 0.05); }
@@ -358,6 +368,8 @@
     .card-nyx    { box-shadow: inset 0 0 60px rgba( 61, 200, 130, 0.04); }
     .card-sw     { box-shadow: inset 0 0 60px rgba(157, 124, 240, 0.05); }
     .card-nc     { box-shadow: inset 0 0 60px rgba( 42, 199, 212, 0.05); }
+    .card-nxd    { box-shadow: inset 0 0 60px rgba( 99, 102, 241, 0.05); }
+    .card-rag    { box-shadow: inset 0 0 60px rgba(232, 119,  90, 0.05); }
 
     /* Ghost number */
     .card-ghost {
@@ -381,6 +393,8 @@
     .card-nyx:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px var(--nyx-glow),   inset 0 1px 0 rgba(61,200,130,0.12);  }
     .card-sw:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--sw-glow),    inset 0 1px 0 rgba(157,124,240,0.12); }
     .card-nc:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--nc-glow),    inset 0 1px 0 rgba( 42,199,212,0.12); }
+    .card-nxd:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px var(--nxd-glow),   inset 0 1px 0 rgba( 99,102,241,0.12); }
+    .card-rag:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px var(--rag-glow),   inset 0 1px 0 rgba(232,119, 90,0.12); }
 
     .card:hover::before { opacity: 1; box-shadow: 0 0 14px 0 currentColor; }
     .card:hover .card-ghost { opacity: 0.1; }
@@ -419,6 +433,8 @@
     .badge-cli  { color: var(--nyx);  background: var(--nyx-glow);   border: 1px solid var(--nyx-border);   }
     .badge-sw   { color: var(--sw);   background: var(--sw-glow);    border: 1px solid var(--sw-border);    }
     .badge-nc   { color: var(--nc);   background: var(--nc-glow);    border: 1px solid var(--nc-border);    }
+    .badge-nxd  { color: var(--nxd);  background: var(--nxd-glow);   border: 1px solid var(--nxd-border);   }
+    .badge-rag  { color: var(--rag);  background: var(--rag-glow);   border: 1px solid var(--rag-border);   }
 
     .card-tagline {
       font-family: var(--font-mono);
@@ -433,6 +449,8 @@
     .card-nyx    .card-tagline { color: var(--nyx);   }
     .card-sw     .card-tagline { color: var(--sw);    }
     .card-nc     .card-tagline { color: var(--nc);    }
+    .card-nxd    .card-tagline { color: var(--nxd);   }
+    .card-rag    .card-tagline { color: var(--rag);   }
 
     .card-desc {
       font-size: 0.875rem;
@@ -473,6 +491,8 @@
     .clink-nyx   { color: var(--nyx);   }
     .clink-sw    { color: var(--sw);    }
     .clink-nc    { color: var(--nc);    }
+    .clink-nxd   { color: var(--nxd);   }
+    .clink-rag   { color: var(--rag);   }
 
     .clink-lip:hover   { color: color-mix(in srgb, var(--lip)   70%, white);   }
     .clink-carto:hover { color: color-mix(in srgb, var(--carto) 70%, white); }
@@ -480,6 +500,8 @@
     .clink-nyx:hover   { color: color-mix(in srgb, var(--nyx)   70%, white);   }
     .clink-sw:hover    { color: color-mix(in srgb, var(--sw)    70%, white);    }
     .clink-nc:hover    { color: color-mix(in srgb, var(--nc)    70%, white);    }
+    .clink-nxd:hover   { color: color-mix(in srgb, var(--nxd)   70%, white);   }
+    .clink-rag:hover   { color: color-mix(in srgb, var(--rag)   70%, white);   }
 
     .sep {
       width: 1px;
@@ -805,13 +827,60 @@
   </section>
 
   <!-- Projects section -->
-  <div class="section-bar"><span>Projects &mdash; 06</span></div>
+  <div class="section-bar"><span>Projects &mdash; 08</span></div>
 
   <div class="projects">
 
+    <!-- ── nyxCore Dashboard ────────────────────────────────────── -->
+    <article class="card card-nxd">
+      <span class="card-ghost" aria-hidden="true">01</span>
+      <div class="card-top">
+        <h2 class="card-name">nyxCore</h2>
+        <span class="badge badge-nxd">TypeScript</span>
+      </div>
+      <p class="card-tagline">Production-grade dashboard for the nyxCore platform.</p>
+      <p class="card-desc">
+        Full-stack internal dashboard built on Next.js 14 App Router with tRPC, PostgreSQL,
+        and Prisma. Auth via NextAuth v5 with JWT and Resend email. Real-time updates over
+        SSE &mdash; no WebSocket overhead. Rate limiting via Redis token bucket. REST + SSE
+        external API under <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--nxd);opacity:0.85;">/api/v1</code>.
+        Vitest unit tests, Playwright e2e, row-level security enforced at the database layer.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/nyxcore-systems" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/nyxcore-systems
+        </a>
+      </div>
+    </article>
+
+    <!-- ── mini-chat-rag ─────────────────────────────────────────── -->
+    <article class="card card-rag">
+      <span class="card-ghost" aria-hidden="true">02</span>
+      <div class="card-top">
+        <h2 class="card-name">MiniRAG</h2>
+        <span class="badge badge-rag">Python</span>
+      </div>
+      <p class="card-tagline">Multi-tenant RAG platform. API-first, provider-agnostic, embeddable.</p>
+      <p class="card-desc">
+        Modular retrieval-augmented generation platform with strict multi-tenant data isolation.
+        Swap LLM providers via LiteLLM &mdash; OpenAI, Anthropic, Google, local models.
+        Streaming chat over SSE, HMAC-signed webhooks, scheduled source re-ingestion,
+        conversation export (JSON/CSV), feedback analytics, and an embeddable Shadow DOM
+        widget that drops in with a single script tag. FastAPI backend, Qdrant vectors,
+        Redis + ARQ worker queue, no-build Alpine.js dashboard.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/mini-chat-rag" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/mini-chat-rag
+        </a>
+      </div>
+    </article>
+
     <!-- ── LIP ─────────────────────────────────────────────────── -->
     <article class="card card-lip">
-      <span class="card-ghost" aria-hidden="true">01</span>
+      <span class="card-ghost" aria-hidden="true">03</span>
       <div class="card-top">
         <h2 class="card-name">LIP</h2>
         <span class="badge badge-rust">Rust</span>
@@ -839,7 +908,7 @@
 
     <!-- ── Cartographer ──────────────────────────────────────────── -->
     <article class="card card-carto">
-      <span class="card-ghost" aria-hidden="true">02</span>
+      <span class="card-ghost" aria-hidden="true">04</span>
       <div class="card-top">
         <h2 class="card-name">Cartographer</h2>
         <span class="badge badge-rust">Rust</span>
@@ -861,7 +930,7 @@
 
     <!-- ── format-converters ─────────────────────────────────────── -->
     <article class="card card-fc">
-      <span class="card-ghost" aria-hidden="true">03</span>
+      <span class="card-ghost" aria-hidden="true">05</span>
       <div class="card-top">
         <h2 class="card-name">format-converters</h2>
         <span class="badge badge-ts">TypeScript</span>
@@ -884,7 +953,7 @@
 
     <!-- ── Nyx.code ──────────────────────────────────────────────── -->
     <article class="card card-nyx">
-      <span class="card-ghost" aria-hidden="true">04</span>
+      <span class="card-ghost" aria-hidden="true">06</span>
       <div class="card-top">
         <h2 class="card-name">Nyx.code</h2>
         <span class="badge badge-cli">CLI</span>
@@ -907,7 +976,7 @@
 
     <!-- ── SwarmWire ───────────────────────────────────────────────── -->
     <article class="card card-sw">
-      <span class="card-ghost" aria-hidden="true">05</span>
+      <span class="card-ghost" aria-hidden="true">07</span>
       <div class="card-top">
         <h2 class="card-name">SwarmWire</h2>
         <span class="badge badge-sw">TypeScript</span>
@@ -934,7 +1003,7 @@
 
     <!-- ── NyxCommander ────────────────────────────────────────────── -->
     <article class="card card-nc">
-      <span class="card-ghost" aria-hidden="true">06</span>
+      <span class="card-ghost" aria-hidden="true">08</span>
       <div class="card-top">
         <h2 class="card-name">Nyx.Commander</h2>
         <span class="badge badge-nc">Tauri</span>
