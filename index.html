@@ -47,6 +47,10 @@
       --sw-glow:      rgba(157, 124, 240, 0.11);
       --sw-border:    rgba(157, 124, 240, 0.32);
 
+      --nc:           #2ac7d4;
+      --nc-glow:      rgba(42, 199, 212, 0.10);
+      --nc-border:    rgba(42, 199, 212, 0.30);
+
       --font-display: 'Space Grotesk', sans-serif;
       --font-body:    'Inter', sans-serif;
       --font-mono:    'JetBrains Mono', monospace;
@@ -328,8 +332,7 @@
     .card:nth-child(3) { animation: rise 0.5s 0.7s ease forwards; }
     .card:nth-child(4) { animation: rise 0.5s 0.8s ease forwards; }
     .card:nth-child(5) { animation: rise 0.5s 0.9s ease forwards; }
-
-    .card-wide { grid-column: 1 / -1; }
+    .card:nth-child(6) { animation: rise 0.5s 1.0s ease forwards; }
 
     /* Top accent bar */
     .card::before {
@@ -346,6 +349,7 @@
     .card-fc::before     { background: var(--fc); }
     .card-nyx::before    { background: var(--nyx); }
     .card-sw::before     { background: var(--sw); }
+    .card-nc::before     { background: var(--nc); }
 
     /* Subtle ambient tint per card — visible at rest */
     .card-lip    { box-shadow: inset 0 0 60px rgba(224, 124,  56, 0.05); }
@@ -353,6 +357,7 @@
     .card-fc     { box-shadow: inset 0 0 60px rgba( 74, 154, 224, 0.05); }
     .card-nyx    { box-shadow: inset 0 0 60px rgba( 61, 200, 130, 0.04); }
     .card-sw     { box-shadow: inset 0 0 60px rgba(157, 124, 240, 0.05); }
+    .card-nc     { box-shadow: inset 0 0 60px rgba( 42, 199, 212, 0.05); }
 
     /* Ghost number */
     .card-ghost {
@@ -375,6 +380,7 @@
     .card-fc:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--fc-glow),    inset 0 1px 0 rgba(74,154,224,0.12);  }
     .card-nyx:hover    { background: var(--surface-2); box-shadow: inset 0 0 100px var(--nyx-glow),   inset 0 1px 0 rgba(61,200,130,0.12);  }
     .card-sw:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--sw-glow),    inset 0 1px 0 rgba(157,124,240,0.12); }
+    .card-nc:hover     { background: var(--surface-2); box-shadow: inset 0 0 100px var(--nc-glow),    inset 0 1px 0 rgba( 42,199,212,0.12); }
 
     .card:hover::before { opacity: 1; box-shadow: 0 0 14px 0 currentColor; }
     .card:hover .card-ghost { opacity: 0.1; }
@@ -412,6 +418,7 @@
     .badge-ts   { color: var(--fc);   background: var(--fc-glow);    border: 1px solid var(--fc-border);    }
     .badge-cli  { color: var(--nyx);  background: var(--nyx-glow);   border: 1px solid var(--nyx-border);   }
     .badge-sw   { color: var(--sw);   background: var(--sw-glow);    border: 1px solid var(--sw-border);    }
+    .badge-nc   { color: var(--nc);   background: var(--nc-glow);    border: 1px solid var(--nc-border);    }
 
     .card-tagline {
       font-family: var(--font-mono);
@@ -425,6 +432,7 @@
     .card-fc     .card-tagline { color: var(--fc);    }
     .card-nyx    .card-tagline { color: var(--nyx);   }
     .card-sw     .card-tagline { color: var(--sw);    }
+    .card-nc     .card-tagline { color: var(--nc);    }
 
     .card-desc {
       font-size: 0.875rem;
@@ -464,12 +472,14 @@
     .clink-fc    { color: var(--fc);    }
     .clink-nyx   { color: var(--nyx);   }
     .clink-sw    { color: var(--sw);    }
+    .clink-nc    { color: var(--nc);    }
 
     .clink-lip:hover   { color: color-mix(in srgb, var(--lip)   70%, white);   }
     .clink-carto:hover { color: color-mix(in srgb, var(--carto) 70%, white); }
     .clink-fc:hover    { color: color-mix(in srgb, var(--fc)    70%, white);    }
     .clink-nyx:hover   { color: color-mix(in srgb, var(--nyx)   70%, white);   }
     .clink-sw:hover    { color: color-mix(in srgb, var(--sw)    70%, white);    }
+    .clink-nc:hover    { color: color-mix(in srgb, var(--nc)    70%, white);    }
 
     .sep {
       width: 1px;
@@ -684,7 +694,6 @@
       .nav-inner { padding: 0 1.5rem; }
       .footer-inner { padding: 1.4rem 1.5rem; }
       .projects { grid-template-columns: 1fr; }
-      .card-wide { grid-column: 1; }
       .hero-title { font-size: 2.2rem; }
       .card { padding: 1.8rem 1.6rem 1.6rem; }
       .card-ghost { font-size: 5rem; }
@@ -725,9 +734,9 @@
         <span class="accent-word">intelligence</span>.
       </h1>
       <p class="hero-sub">
-        Four open-source tools for the layer beneath your editor &mdash;
+        Open-source tools for the layer beneath your editor &mdash;
         live code graphs, architectural analysis, LLM-native format handling,
-        and AI-powered shell.
+        AI-powered shell, multi-agent orchestration, and a keyboard-first file manager.
       </p>
       <a class="hero-cta" href="https://github.com/nyxCore-Systems" target="_blank" rel="noopener">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
@@ -796,7 +805,7 @@
   </section>
 
   <!-- Projects section -->
-  <div class="section-bar"><span>Projects &mdash; 05</span></div>
+  <div class="section-bar"><span>Projects &mdash; 06</span></div>
 
   <div class="projects">
 
@@ -897,7 +906,7 @@
     </article>
 
     <!-- ── SwarmWire ───────────────────────────────────────────────── -->
-    <article class="card card-sw card-wide">
+    <article class="card card-sw">
       <span class="card-ghost" aria-hidden="true">05</span>
       <div class="card-top">
         <h2 class="card-name">SwarmWire</h2>
@@ -919,6 +928,28 @@
         <a class="clink clink-sw" href="https://www.npmjs.com/package/swarmwire" target="_blank" rel="noopener">
           npm install swarmwire
           <svg width="9" height="9" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 10L10 2M10 2H4M10 2V8"/></svg>
+        </a>
+      </div>
+    </article>
+
+    <!-- ── NyxCommander ────────────────────────────────────────────── -->
+    <article class="card card-nc">
+      <span class="card-ghost" aria-hidden="true">06</span>
+      <div class="card-top">
+        <h2 class="card-name">Nyx.Commander</h2>
+        <span class="badge badge-nc">Tauri</span>
+      </div>
+      <p class="card-tagline">Two panels, full keyboard, no Electron.</p>
+      <p class="card-desc">
+        Keyboard-first dual-pane file manager for macOS and Linux in the tradition of Total Commander
+        and FAR Manager &mdash; native Rust backend via Tauri 2, Svelte 5 frontend. Two panels with
+        independent tab stacks, archive browsing, hex and diff viewers, a live process explorer, and
+        a plugin system that hot-reloads from <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--nc);opacity:0.85;">~/.nyx/plugins/</code>.
+      </p>
+      <div class="card-links">
+        <a class="clink clink-gh" href="https://github.com/nyxCore-Systems/NyxCommander" target="_blank" rel="noopener">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          nyxCore-Systems/NyxCommander
         </a>
       </div>
     </article>
